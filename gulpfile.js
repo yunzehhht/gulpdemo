@@ -162,6 +162,6 @@ exports.build = gulp.series("clean","html", "less", "js", "img");
 exports.dev = gulp.series(gulp.series("clean","html", "less", "js", "img"),gulp.parallel(
 	"connect",
 	"watch"
-))
+))  
 //压缩任务
 exports.zip = gulp.series("clean","html", "less", "js", "img",'zip')
