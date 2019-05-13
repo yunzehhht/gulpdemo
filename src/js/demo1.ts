@@ -20,3 +20,19 @@ class mySqlDb<T>  implements DBI<T>{
     }
 
 }  
+
+let logs =(params: any)=>{
+    console.log(params) 
+}
+
+   
+
+@logs 
+class HttpServer {
+    constructor(){
+ 
+    }
+    getUrl(){
+
+    }
+}

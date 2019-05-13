@@ -75,7 +75,9 @@ gulp.task(
 	gulp.series(() =>
 		gulp
 			.src(["./src/js/*.js", "./src/js/*.ts"])
-			.pipe(gulpIf(fileCondition, ts()))
+			.pipe(gulpIf(fileCondition, ts({
+				experimentalDecorators:true
+			})))
 			.pipe(sourcemaps.init())
 			.pipe(babel())
 			.pipe(gulp.dest("./dist/js"))
@@ -118,8 +120,7 @@ exports.default = gulp.parallel("connect", "watch")
 //prod任务
 exports.build = gulp.series("html", "less", "js", "img")
 //dev任务
-exports.dev = gulp.parallel(
+exports.dev = gulp.series(gulp.series("html", "less", "js", "img"),gulp.parallel(
 	"connect",
-	gulp.series("html", "less", "js", "img"),
 	"watch"
-)
+))
