@@ -1,5 +1,6 @@
 const gulp = require("gulp") //gulp
-const path = require("path") //path模块
+// const browserify = require('gulp-browserify');
+const base64 = require('gulp-base64')
 const connect = require("gulp-connect") // 启动本地服务器
 const babel = require("gulp-babel") //babel
 const sourcemaps = require("gulp-sourcemaps") //生成sourcemaps
@@ -61,6 +62,10 @@ gulp.task(
 			.src("./src/css/*.less")
 			.pipe(less())
 			.pipe(postCss([autoprefixer({ browsers: ["last 2 versions"] })]))
+			.pipe(base64({
+				maxImageSize: 8*1024, 						// base64限制版 
+				// debug: true
+			 }))
 			.pipe(gulp.dest("./dist/css"))
 			.pipe(cleanCss())
 			.pipe(rename({ extname: ".min.css" }))
@@ -72,21 +77,24 @@ gulp.task(
 //js文件
 gulp.task(
 	"js",
-	gulp.series(() =>
-		gulp
+	gulp.series(() => {
+		 return gulp
 			.src(["./src/js/*.js", "./src/js/*.ts"])
 			.pipe(gulpIf(fileCondition, ts({
 				experimentalDecorators:true
 			})))
 			.pipe(sourcemaps.init())
 			.pipe(babel())
+			// .pipe(browserify({
+			// 	insertGlobals : true,
+			//   }))
 			.pipe(gulp.dest("./dist/js"))
 			.pipe(uglify())
 			.pipe(rename({ extname: ".min.js" }))
 			.pipe(gulpIf(condition, sourcemaps.write()))
 			.pipe(gulpIf(condition, connect.reload()))
 			.pipe(gulp.dest("./dist/js/min"))
-	)
+	})
 )
 
 // 图片
@@ -118,7 +126,7 @@ gulp.task("watch", ()=> {
 // 默认任务
 exports.default = gulp.parallel("connect", "watch")
 //prod任务
-exports.build = gulp.series("html", "less", "js", "img")
+exports.build = gulp.series("html", "less", "js", "img");
 //dev任务
 exports.dev = gulp.series(gulp.series("html", "less", "js", "img"),gulp.parallel(
 	"connect",

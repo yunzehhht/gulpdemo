@@ -21,11 +21,13 @@ class mySqlDb<T>  implements DBI<T>{
 
 }  
 
+
 let logs =(params: any)=>{
     console.log(params) 
+    console.log(1111)
 }
 
-   
+    
 
 @logs 
 class HttpServer {
@@ -33,6 +35,8 @@ class HttpServer {
  
     }
     getUrl(){
-
+        
     }
 }
+let a =  new HttpServer();
+console.log(222)
