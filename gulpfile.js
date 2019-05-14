@@ -1,5 +1,5 @@
 const gulp = require("gulp"), //gulp
-   browserify = require('gulp-browserify'),
+   	//   browserify = require('gulp-browserify'),
  	  clean = require('del'), //删除
       base64 = require('gulp-base64'), //base64
 	  zip   = require('gulp-zip'),
@@ -89,9 +89,9 @@ gulp.task(
 			})))
 			.pipe(sourcemaps.init())
 			.pipe(babel())
-			.pipe(browserify({
-				insertGlobals : true,
-			  }))
+			// .pipe(browserify({
+			// 	insertGlobals : true,
+			//   }))
 			.pipe(gulp.dest("./dist/js"))
 			.pipe(uglify())
 			.pipe(rename({ extname: ".min.js" }))
