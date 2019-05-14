@@ -8,7 +8,7 @@
     "dev": "set NODE_ENV=dev&&npx gulp dev",
     "build": "set NODE_ENV=prod&&npx gulp build",
     "clean": "npx gulp clean",
-    "zip":"set NODE_ENV=prod&&npx gulp zip"
+    "zip":"set NODE_ENV=prod&&npx gulp build zip"
   },
   "devDependencies": {
     "@babel/cli": "^7.4.4",
