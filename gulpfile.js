@@ -51,12 +51,7 @@ gulp.task("connect", () =>
 
 
 //clean
-gulp.task('clean', function () {
-	return   clean([
-		'./dist',
-	  ]);
-	 
-  });
+gulp.task('clean',  ()=> clean(['./dist',]));
 
 // html文件
 gulp.task("html", () => gulp
@@ -87,8 +82,7 @@ gulp.task(
 //js文件
 gulp.task(
 	"js",
-	gulp.series(() => {
-		 return gulp
+	gulp.series(() => gulp
 			.src(["./src/js/*.js", "./src/js/*.ts"])
 			.pipe(gulpIf(fileCondition, ts({
 				experimentalDecorators:true
@@ -104,7 +98,7 @@ gulp.task(
 			.pipe(gulpIf(condition, sourcemaps.write()))
 			.pipe(gulpIf(condition, connect.reload()))
 			.pipe(gulp.dest("./dist/js/min"))
-	})
+	)
 )
 
 // 图片
@@ -134,20 +128,19 @@ gulp.task("watch", ()=> {
 })
 
 //打包zip
-gulp.task('zip', function(){
-	function checkTime(i) {
+gulp.task('zip', ()=>{
+	let  checkTime = (i)=>{
 		if (i < 10) {
 			i = "0" + i
 		}
 		return i
 	}
-		
-	var d=new Date();
-	var year=d.getFullYear();
-	var month=checkTime(d.getMonth() + 1);
-	var day=checkTime(d.getDate());
-	var hour=checkTime(d.getHours());
-	var minute=checkTime(d.getMinutes());
+	let d=new Date();
+	let year=d.getFullYear();
+	let month=checkTime(d.getMonth() + 1);
+	let day=checkTime(d.getDate());
+	let hour=checkTime(d.getHours());
+	let minute=checkTime(d.getMinutes());
 
 return gulp.src('./dist/*')
 	  .pipe(zip('dist'+'-'+year+month+day +hour+minute+'.zip'))
