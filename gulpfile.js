@@ -2,10 +2,11 @@ const gulp = require("gulp"), //gulp
    	//   browserify = require('gulp-browserify'),
  	  clean = require('del'), //删除
       base64 = require('gulp-base64'), //base64
-	  zip   = require('gulp-zip'),
+	  zip   = require('gulp-zip'),     //打包zip
 	  connect = require("gulp-connect"), // 启动本地服务器
 	  babel = require("gulp-babel"), //babel
 	  sourcemaps = require("gulp-sourcemaps"), //生成sourcemaps
+	  htmlmin = require('gulp-htmlmin'), //压缩html
 	  rename = require("gulp-rename"), //rename
 	  uglify = require("gulp-uglify"), //压缩js
 	  less = require("gulp-less"), //处理less
@@ -19,7 +20,15 @@ const gulp = require("gulp"), //gulp
 	  pngquant = require("imagemin-pngquant"); //png图片深度压缩
 
 const env = process.env.NODE_ENV //获取当前环境
+
+const baseUrl = './src'
+const htmlUrl = `${baseUrl}/*.html`;
+const cssUrl = `${baseUrl}/css/*.css`;
+const lessUrl = `${baseUrl}/css/*.less`;
+const jsUrl = `${baseUrl}/js/*.js`;
+const imageUrl = `${baseUrl}/images`
 console.info("当前环境是:" + env)
+
 //判断条件环境
 let condition = file => {
 	if (env === "dev") {
@@ -54,17 +63,29 @@ gulp.task("connect", () =>
 gulp.task('clean',  ()=> clean(['./dist',]));
 
 // html文件
-gulp.task("html", () => gulp
-		.src("./src/*.html")
-		.pipe(gulpIf(condition, connect.reload()))
-		.pipe(gulp.dest("./dist"))
-)
+gulp.task("html", () =>{  
+	const options = {
+		collapseWhitespace:true,
+		collapseBooleanAttributes:true,
+		removeComments:true,
+		removeEmptyAttributes:true, //清除所有的空属性
+		removeScriptTypeAttributes:true,
+		removeStyleLinkTypeAttributes:true,
+		minifyJS:true,//压缩html中的javascript代码。
+		minifyCSS:true //压缩html中的css代码。
+	}
+	
+	return gulp.src(`${htmlUrl}`)
+			//    .pipe(htmlmin(options))
+			   .pipe(gulpIf(condition, connect.reload()))
+			   .pipe(gulp.dest("./dist"))
+})
 
 // css文件
 gulp.task(
 	"less",
 	gulp.series(() => gulp
-			.src("./src/css/*.less")
+			.src([`${lessUrl}`,`${cssUrl}`])
 			.pipe(less())
 			.pipe(postCss([autoprefixer({ browsers: ["last 2 versions"] })]))
 			.pipe(base64({
@@ -83,7 +104,7 @@ gulp.task(
 gulp.task(
 	"js",
 	gulp.series(() => gulp
-			.src(["./src/js/*.js", "./src/js/*.ts"])
+			.src([`${jsUrl}`, `${baseUrl}/js/*.ts`])
 			.pipe(gulpIf(fileCondition, ts({
 				experimentalDecorators:true
 			})))
@@ -104,7 +125,7 @@ gulp.task(
 // 图片
 gulp.task("img", ()=>
 	gulp
-		.src(["src/images/*.*", "src/images/*", "src/images/*/*"])
+		.src([`${imageUrl}/*.*`, `${imageUrl}/*`, `${imageUrl}/*/*`])
 		.pipe(
 			imagemin({
 				optimizationLevel: 5, //类型：Number  默认：3  取值范围：0-7（优化等级）
@@ -121,10 +142,10 @@ gulp.task("img", ()=>
 
 // 监控
 gulp.task("watch", ()=> {
-	gulp.watch(["./src/*.html"], gulp.series("html"))
-	gulp.watch(["./src/js/*.js", "./src/js/*.ts"], gulp.series("js"))
-	gulp.watch(["./src/css/*.less"], gulp.series("less"))
-	gulp.watch(["./src/images/*.(jpg|png|svg|gif)"], gulp.series("img"))
+	gulp.watch([`${baseUrl}/*.html`], gulp.series("html"))
+	gulp.watch([`${baseUrl}/js/*.js`, "./src/js/*.ts"], gulp.series("js"))
+	gulp.watch([`${baseUrl}/css/*.less`], gulp.series("less"))
+	gulp.watch([`${baseUrl}/images/*.(jpg|png|svg|gif)`], gulp.series("img"))
 })
 
 //打包zip
@@ -155,6 +176,6 @@ exports.build = gulp.series("clean","html", "less", "js", "img");
 exports.dev = gulp.series(gulp.series("clean","html", "less", "js", "img"),gulp.parallel(
 	"connect",
 	"watch"
-))  
+));
 //压缩任务 
-exports.zip = gulp.series('zip')
+exports.zip = gulp.series("clean","html", "less", "js", "img","zip");

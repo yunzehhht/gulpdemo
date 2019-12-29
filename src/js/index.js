@@ -12,10 +12,31 @@
 //   value:'123123',
 //   writable:true | false
 // })
-// console.log(obj.newKey)
+// console.log(obj.newKey) 
 
 let arr = [1,2,3,4,5,6,7,8,9];
+let obj = {
+  a:1,
+  b:2,
+  c:3
+} 
+let obj2 = {
+  a:1,
+  b:2,
+  c:3
+} 
+let obj3 = {
+  a:1,
+  b:2,
+  c:3
+} 
+let obj4 = {
+  a:1,
+  b:2,
+  c:3
+} 
 
-arr.map((item)=>{
+
+arr.map((item)=>{ 
   return item*3
 })
